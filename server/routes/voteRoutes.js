@@ -1,0 +1,14 @@
+import { Router } from "express";
+import { z } from "zod";
+import { authenticate, authorize } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import * as c from "../controllers/voteController.js";
+const router = Router();
+router.get("/verify/:hash", c.verifyTransaction);
+router.use(authenticate, authorize("voter"));
+router.get("/mine", c.myVotes);
+router.post("/prepare", validate(z.object({ electionId: z.number().int().positive(), candidateId: z.number().int().positive(), challengeId: z.string().min(1), signature: z.string().startsWith("0x") })), c.prepare);
+router.post("/confirm", validate(z.object({ ballotId: z.string().min(1), txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/) })), c.confirm);
+router.get("/:id/reveal", c.revealPackage);
+router.post("/:id/reveal", validate(z.object({ txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/) })), c.confirmReveal);
+export default router;

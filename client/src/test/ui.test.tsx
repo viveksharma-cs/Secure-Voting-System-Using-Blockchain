@@ -1,0 +1,2 @@
+import{describe,expect,it}from"vitest";import{render,screen}from"@testing-library/react";import{MemoryRouter}from"react-router-dom";import{Landing}from"../pages/PublicPages";
+describe("public experience",()=>{it("explains the verifiable voting goal",()=>{render(<MemoryRouter><Landing/></MemoryRouter>);expect(screen.getByText(/Trust the process/i)).toBeInTheDocument();expect(screen.getByRole("link",{name:/Register to vote/i})).toHaveAttribute("href","/register")})});

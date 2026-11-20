@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { z } from "zod";
+import { authenticate, authorize } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import * as c from "../controllers/electionController.js";
+const router = Router();
+router.get("/", c.list); router.get("/stats", authenticate, authorize("admin"), c.stats); router.get("/audit", authenticate, authorize("admin"), c.auditLogs); router.get("/:id", c.getOne); router.get("/:id/results", c.results);
+router.post("/", authenticate, authorize("admin"), validate(z.object({ onChainId: z.number().int().positive(), title: z.string().trim().min(3).max(140), description: z.string().max(2000).default(""), txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/) })), c.create);
+router.post("/:id/candidates", authenticate, authorize("admin"), validate(z.object({ chainId: z.number().int().positive(), name: z.string().min(2), party: z.string().min(1), description: z.string().default(""), photoUrl: z.string().url().or(z.literal("")), txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/) })), c.addCandidate);
+router.post("/:id/lifecycle", authenticate, authorize("admin"), validate(z.object({ action: z.enum(["started", "paused", "ended", "published"]), txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/) })), c.syncStatus);
+export default router;

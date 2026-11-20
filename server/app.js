@@ -1,0 +1,23 @@
+import "express-async-errors";
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
+import morgan from "morgan";
+import { env } from "./config/env.js";
+import authRoutes from "./routes/authRoutes.js";
+import walletRoutes from "./routes/walletRoutes.js";
+import electionRoutes from "./routes/electionRoutes.js";
+import voteRoutes from "./routes/voteRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+
+export const app = express();
+app.set("trust proxy", 1);
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(cors({ origin: env.clientUrl.split(","), methods: ["GET", "POST", "PATCH", "DELETE"], allowedHeaders: ["Content-Type", "Authorization"] }));
+app.use(express.json({ limit: "100kb" })); app.use(mongoSanitize());
+if (env.nodeEnv !== "test") app.use(morgan("combined"));
+app.get("/api/health", (_req, res) => res.json({ status: "ok", service: "secure-vote-api" }));
+app.use("/api/auth", authRoutes); app.use("/api/wallet", walletRoutes); app.use("/api/elections", electionRoutes); app.use("/api/votes", voteRoutes); app.use("/api/admin", adminRoutes);
+app.use((_req, res) => res.status(404).json({ error: "Route not found" }));
+app.use((err, _req, res, _next) => { if (env.nodeEnv !== "test") console.error(err); const status = err.status || (err?.code === 11000 ? 409 : err.name === "ValidationError" ? 422 : 500); const message = err?.code === 11000 ? "A record with these election or account details already exists" : status === 500 ? "Internal server error" : err.message; res.status(status).json({ error: message }); });

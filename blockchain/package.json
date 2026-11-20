@@ -1,0 +1,21 @@
+{
+  "name": "secure-voting-blockchain",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "node": "hardhat node",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "performance": "hardhat run scripts/performance.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "chai": "^4.5.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.15"
+  }
+}

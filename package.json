@@ -1,0 +1,19 @@
+{
+  "name": "secure-digital-voting-system",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["client", "server", "blockchain"],
+  "scripts": {
+    "dev": "concurrently -n API,WEB -c blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev:chain": "npm run node -w blockchain",
+    "deploy:local": "npm run deploy:local -w blockchain",
+    "build": "npm run build -w client",
+    "test": "npm run test -w blockchain && npm run test -w server && npm run test -w client",
+    "seed": "npm run seed -w server",
+    "performance": "npm run performance -w blockchain"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  },
+  "engines": { "node": ">=20" }
+}

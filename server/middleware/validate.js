@@ -1,0 +1,1 @@
+export const validate = schema => (req, _res, next) => { const result = schema.safeParse(req.body); if (!result.success) return next(Object.assign(new Error(result.error.issues.map(x => x.message).join(", ")), { status: 422 })); req.body = result.data; next(); };

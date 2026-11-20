@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+.env
+*.log
+blockchain/artifacts/
+blockchain/cache/
+blockchain/typechain-types/
+server/data/
+shared/deployment.json
+tmp/
+client/.vite/
+*.tsbuildinfo
+client/vite.config.js
+client/vite.config.d.ts
+
